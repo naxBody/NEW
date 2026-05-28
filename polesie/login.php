@@ -1,0 +1,182 @@
+<?php
+/**
+ * Страница входа в систему
+ */
+session_start();
+require_once '../config/config.php';
+require_once '../includes/database.php';
+require_once '../includes/auth.php';
+require_once '../includes/functions.php';
+
+// Если уже авторизован - перенаправляем на главную
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    redirect('/polesie/index.php?page=dashboard');
+}
+
+$error = '';
+$success = '';
+
+// Обработка формы входа
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
+    
+    if (empty($username) || empty($password)) {
+        $error = 'Введите имя пользователя и пароль';
+    } else {
+        $auth = new Auth();
+        $result = $auth->login($username, $password);
+        
+        if ($result['success']) {
+            redirect('/polesie/index.php?page=dashboard');
+        } else {
+            $error = $result['message'];
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему | <?php echo getSetting('company_name', 'Полесьеэлектромаш'); ?></title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #2c5282 0%, #3182ce 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .login-header h2 {
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .login-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .login-body {
+            padding: 2rem;
+        }
+        
+        .form-control:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 0.2rem rgba(49, 130, 206, 0.25);
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #2c5282 0%, #3182ce 100%);
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .btn-login:hover {
+            background: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+        }
+        
+        .company-info {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h2><i class="fas fa-industry me-2"></i>Полесьеэлектромаш</h2>
+            <p>Система управления производством</p>
+        </div>
+        
+        <div class="login-body">
+            <?php if ($error): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i><?php echo e($error); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php endif; ?>
+            
+            <?php if ($success): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i><?php echo e($success); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php endif; ?>
+            
+            <form method="POST" action="">
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user me-2"></i>Имя пользователя
+                    </label>
+                    <input type="text" class="form-control" id="username" name="username" 
+                           placeholder="Введите имя пользователя" required autofocus>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock me-2"></i>Пароль
+                    </label>
+                    <input type="password" class="form-control" id="password" name="password" 
+                           placeholder="Введите пароль" required>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label" for="remember">Запомнить меня</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-login w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i>Войти
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    Тестовые учетные данные:<br>
+                    Логин: <strong>admin</strong> | Пароль: <strong>admin123</strong>
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="company-info">
+        <p>&copy; <?php echo date('Y'); ?> ОАО "Полесьеэлектромаш"</p>
+        <p class="small">Республика Беларусь, Гомельская обл., г. Мозырь</p>
+    </div>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
