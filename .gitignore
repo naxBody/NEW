@@ -9,7 +9,7 @@ vendor/
 # Environment
 .env
 .env.local
-.env.*
+*.env.*
 
 # Editors
 .vscode/
@@ -21,5 +21,6 @@ Thumbs.db
 
 # PHP specific
 *.php~
-*.php.bak
+php_errors.log
+error_log
 ```
