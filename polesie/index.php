@@ -94,7 +94,7 @@ $moduleMap = [
 $requiredModule = $moduleMap[$page] ?? 'dashboard';
 if (!$auth->canAccessModule($requiredModule)) {
     http_response_code(403);
-    die('<h1>Доступ запрещен</h1><p>У вас нет прав для доступа к этой странице.</p><a href="/polesie/index.php?page=dashboard">Вернуться на главную</a>');
+    die('<h1>Доступ запрещен</h1><p>У вас нет прав для доступа к этой странице.</p><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Вернуться на главную</a>');
 }
 
 // Заголовок страницы

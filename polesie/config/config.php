@@ -15,6 +15,7 @@ define('DB_CHARSET', 'utf8mb4');
 define('APP_NAME', 'Полесьеэлектромаш - Система управления производством');
 define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/polesie');
+define('BASE_URL', '/polesie');
 define('TIMEZONE', 'Europe/Minsk');
 
 // Пути к директориям (определяем только если ещё не определены)

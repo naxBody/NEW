@@ -2,6 +2,7 @@
 /**
  * Панель управления (Dashboard)
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 // Получаем статистику
@@ -147,7 +148,7 @@ $activeTasks = $stmt->fetchAll();
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="fas fa-shopping-cart me-2"></i>Последние заказы</span>
-                <a href="/polesie/index.php?page=orders" class="btn btn-sm btn-primary">Все заказы</a>
+                <a href="<?php echo BASE_URL; ?>/index.php?page=orders" class="btn btn-sm btn-primary">Все заказы</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -169,7 +170,7 @@ $activeTasks = $stmt->fetchAll();
                                 <?php foreach ($recentOrders as $order): ?>
                                 <?php $statusInfo = getOrderStatusText($order['status']); ?>
                                 <tr>
-                                    <td><a href="/polesie/index.php?page=order_view&id=<?php echo $order['id']; ?>"><?php echo e($order['order_number']); ?></a></td>
+                                    <td><a href="<?php echo BASE_URL; ?>/index.php?page=order_view&id=<?php echo $order['id']; ?>"><?php echo e($order['order_number']); ?></a></td>
                                     <td><?php echo e($order['customer_name']); ?></td>
                                     <td><span class="badge <?php echo $statusInfo['class']; ?>"><?php echo $statusInfo['text']; ?></span></td>
                                     <td><?php echo formatDate($order['order_date'], 'd.m.Y'); ?></td>
@@ -187,7 +188,7 @@ $activeTasks = $stmt->fetchAll();
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="fas fa-cogs me-2"></i>Активные задания</span>
-                <a href="/polesie/index.php?page=production" class="btn btn-sm btn-primary">Все задания</a>
+                <a href="<?php echo BASE_URL; ?>/index.php?page=production" class="btn btn-sm btn-primary">Все задания</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -209,7 +210,7 @@ $activeTasks = $stmt->fetchAll();
                                 <?php foreach ($activeTasks as $task): ?>
                                 <?php $statusInfo = getTaskStatusText($task['status']); ?>
                                 <tr>
-                                    <td><a href="/polesie/index.php?page=task_view&id=<?php echo $task['id']; ?>"><?php echo e($task['task_number']); ?></a></td>
+                                    <td><a href="<?php echo BASE_URL; ?>/index.php?page=task_view&id=<?php echo $task['id']; ?>"><?php echo e($task['task_number']); ?></a></td>
                                     <td><?php echo e($task['product_name']); ?></td>
                                     <td><span class="badge <?php echo $statusInfo['class']; ?>"><?php echo $statusInfo['text']; ?></span></td>
                                     <td>
@@ -247,7 +248,7 @@ $activeTasks = $stmt->fetchAll();
                 <div class="row">
                     <?php if ($auth->canAccessModule('orders')): ?>
                     <div class="col-md-3 mb-3">
-                        <a href="/polesie/index.php?page=order_create" class="btn btn-outline-primary w-100 py-3">
+                        <a href="<?php echo BASE_URL; ?>/index.php?page=order_create" class="btn btn-outline-primary w-100 py-3">
                             <i class="fas fa-plus-circle fa-2x mb-2"></i>
                             <div>Новый заказ</div>
                         </a>
@@ -256,7 +257,7 @@ $activeTasks = $stmt->fetchAll();
                     
                     <?php if ($auth->canAccessModule('production')): ?>
                     <div class="col-md-3 mb-3">
-                        <a href="/polesie/index.php?page=task_create" class="btn btn-outline-success w-100 py-3">
+                        <a href="<?php echo BASE_URL; ?>/index.php?page=task_create" class="btn btn-outline-success w-100 py-3">
                             <i class="fas fa-tasks fa-2x mb-2"></i>
                             <div>Задание</div>
                         </a>
@@ -265,7 +266,7 @@ $activeTasks = $stmt->fetchAll();
                     
                     <?php if ($auth->canAccessModule('quality')): ?>
                     <div class="col-md-3 mb-3">
-                        <a href="/polesie/index.php?page=quality_create" class="btn btn-outline-warning w-100 py-3">
+                        <a href="<?php echo BASE_URL; ?>/index.php?page=quality_create" class="btn btn-outline-warning w-100 py-3">
                             <i class="fas fa-clipboard-check fa-2x mb-2"></i>
                             <div>Проверка ОТК</div>
                         </a>
@@ -274,7 +275,7 @@ $activeTasks = $stmt->fetchAll();
                     
                     <?php if ($auth->canAccessModule('warehouse')): ?>
                     <div class="col-md-3 mb-3">
-                        <a href="/polesie/index.php?page=inventory_transaction" class="btn btn-outline-info w-100 py-3">
+                        <a href="<?php echo BASE_URL; ?>/index.php?page=inventory_transaction" class="btn btn-outline-info w-100 py-3">
                             <i class="fas fa-dolly fa-2x mb-2"></i>
                             <div>Движение ТМЦ</div>
                         </a>

@@ -2,6 +2,7 @@
 /**
  * Модуль управления сотрудниками
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $action = $_GET['action'] ?? 'list';
@@ -138,7 +139,7 @@ $activePage = 'employees';
     <h3><i class="fas fa-users me-2"></i>Сотрудники</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
             <li class="breadcrumb-item active">Сотрудники</li>
         </ol>
     </nav>
@@ -157,7 +158,7 @@ $activePage = 'employees';
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-list me-2"></i>Список сотрудников</span>
         <?php if ($auth->hasRole(['admin', 'manager'])): ?>
-        <a href="/polesie/index.php?page=employee_create" class="btn btn-primary btn-sm">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=employee_create" class="btn btn-primary btn-sm">
             <i class="fas fa-plus me-2"></i>Добавить сотрудника
         </a>
         <?php endif; ?>
@@ -202,12 +203,12 @@ $activePage = 'employees';
                             <td><?php echo formatDate($emp['last_login'], 'd.m.Y H:i'); ?></td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="/polesie/index.php?page=employee_view&id=<?php echo $emp['id']; ?>" 
+                                    <a href="<?php echo BASE_URL; ?>/index.php?page=employee_view&id=<?php echo $emp['id']; ?>" 
                                        class="btn btn-outline-primary" title="Просмотр">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <?php if ($auth->hasRole(['admin', 'manager'])): ?>
-                                    <a href="/polesie/index.php?page=employee_edit&id=<?php echo $emp['id']; ?>" 
+                                    <a href="<?php echo BASE_URL; ?>/index.php?page=employee_edit&id=<?php echo $emp['id']; ?>" 
                                        class="btn btn-outline-warning" title="Редактировать">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -271,11 +272,11 @@ $activePage = 'employees';
                 </dl>
             </div>
             <div class="card-footer">
-                <a href="/polesie/index.php?page=employees" class="btn btn-secondary">
+                <a href="<?php echo BASE_URL; ?>/index.php?page=employees" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Назад к списку
                 </a>
                 <?php if ($auth->hasRole(['admin', 'manager'])): ?>
-                <a href="/polesie/index.php?page=employee_edit&id=<?php echo $employee['id']; ?>" class="btn btn-warning">
+                <a href="<?php echo BASE_URL; ?>/index.php?page=employee_edit&id=<?php echo $employee['id']; ?>" class="btn btn-warning">
                     <i class="fas fa-edit me-2"></i>Редактировать
                 </a>
                 <?php endif; ?>
@@ -395,7 +396,7 @@ $activePage = 'employees';
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save me-2"></i>Сохранить
             </button>
-            <a href="/polesie/index.php?page=employees" class="btn btn-secondary">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=employees" class="btn btn-secondary">
                 <i class="fas fa-times me-2"></i>Отмена
             </a>
         </form>

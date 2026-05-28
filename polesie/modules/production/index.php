@@ -2,6 +2,7 @@
 /**
  * Модуль управления производством
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $action = $_GET['action'] ?? 'list';
@@ -196,8 +197,8 @@ if ($action === 'create') {
     ?></h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=production">Производство</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=production">Производство</a></li>
             <?php if ($action === 'view' || $action === 'create'): ?>
             <li class="breadcrumb-item active"><?php echo $action === 'create' ? 'Создание' : 'Просмотр'; ?></li>
             <?php endif; ?>
@@ -218,7 +219,7 @@ if ($action === 'create') {
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-filter me-2"></i>Фильтры</span>
         <?php if ($auth->hasRole(['admin', 'manager', 'technologist'])): ?>
-        <a href="/polesie/index.php?page=task_create" class="btn btn-primary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=task_create" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Новое задание
         </a>
         <?php endif; ?>
@@ -273,7 +274,7 @@ if ($action === 'create') {
                         <?php $statusInfo = getTaskStatusText($task['status']); ?>
                         <tr>
                             <td>
-                                <a href="/polesie/index.php?page=task_view&id=<?php echo $task['id']; ?>">
+                                <a href="<?php echo BASE_URL; ?>/index.php?page=task_view&id=<?php echo $task['id']; ?>">
                                     <?php echo e($task['task_number']); ?>
                                 </a>
                             </td>
@@ -305,7 +306,7 @@ if ($action === 'create') {
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="/polesie/index.php?page=task_view&id=<?php echo $task['id']; ?>" class="btn btn-sm btn-outline-primary">
+                                <a href="<?php echo BASE_URL; ?>/index.php?page=task_view&id=<?php echo $task['id']; ?>" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </td>
@@ -501,7 +502,7 @@ if ($action === 'create') {
 </div>
 
 <div class="mt-4">
-    <a href="/polesie/index.php?page=production" class="btn btn-secondary">
+    <a href="<?php echo BASE_URL; ?>/index.php?page=production" class="btn btn-secondary">
         <i class="fas fa-arrow-left me-2"></i>Назад к списку
     </a>
 </div>
@@ -594,7 +595,7 @@ if ($action === 'create') {
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save me-2"></i>Создать задание
         </button>
-        <a href="/polesie/index.php?page=production" class="btn btn-secondary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=production" class="btn btn-secondary">
             <i class="fas fa-times me-2"></i>Отмена
         </a>
     </div>

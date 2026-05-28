@@ -2,6 +2,7 @@
 /**
  * Модуль управления заказами
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $action = $_GET['action'] ?? 'list';
@@ -162,8 +163,8 @@ if ($action === 'create') {
     ?></h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=orders">Заказы</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=orders">Заказы</a></li>
             <?php if ($action === 'view' || $action === 'create'): ?>
             <li class="breadcrumb-item active"><?php echo $action === 'create' ? 'Создание' : 'Просмотр'; ?></li>
             <?php endif; ?>
@@ -184,7 +185,7 @@ if ($action === 'create') {
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-filter me-2"></i>Фильтры</span>
         <?php if ($auth->canAccessModule('orders')): ?>
-        <a href="/polesie/index.php?page=order_create" class="btn btn-primary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=order_create" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Новый заказ
         </a>
         <?php endif; ?>
@@ -245,7 +246,7 @@ if ($action === 'create') {
                         <?php $statusInfo = getOrderStatusText($order['status']); ?>
                         <tr>
                             <td>
-                                <a href="/polesie/index.php?page=order_view&id=<?php echo $order['id']; ?>">
+                                <a href="<?php echo BASE_URL; ?>/index.php?page=order_view&id=<?php echo $order['id']; ?>">
                                     <?php echo e($order['order_number']); ?>
                                 </a>
                             </td>
@@ -268,7 +269,7 @@ if ($action === 'create') {
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="/polesie/index.php?page=order_view&id=<?php echo $order['id']; ?>" class="btn btn-outline-primary" title="Просмотр">
+                                    <a href="<?php echo BASE_URL; ?>/index.php?page=order_view&id=<?php echo $order['id']; ?>" class="btn btn-outline-primary" title="Просмотр">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <?php if ($auth->hasRole(['admin', 'manager'])): ?>
@@ -430,7 +431,7 @@ if ($action === 'create') {
                 <ul class="list-group list-group-flush">
                     <?php foreach ($tasks as $task): ?>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="/polesie/index.php?page=task_view&id=<?php echo $task['id']; ?>">
+                        <a href="<?php echo BASE_URL; ?>/index.php?page=task_view&id=<?php echo $task['id']; ?>">
                             <?php echo e($task['task_number']); ?>
                         </a>
                         <?php $taskStatus = getTaskStatusText($task['status']); ?>
@@ -445,7 +446,7 @@ if ($action === 'create') {
 </div>
 
 <div class="mt-4">
-    <a href="/polesie/index.php?page=orders" class="btn btn-secondary">
+    <a href="<?php echo BASE_URL; ?>/index.php?page=orders" class="btn btn-secondary">
         <i class="fas fa-arrow-left me-2"></i>Назад к списку
     </a>
 </div>
@@ -537,7 +538,7 @@ if ($action === 'create') {
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save me-2"></i>Создать заказ
         </button>
-        <a href="/polesie/index.php?page=orders" class="btn btn-secondary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=orders" class="btn btn-secondary">
             <i class="fas fa-times me-2"></i>Отмена
         </a>
     </div>

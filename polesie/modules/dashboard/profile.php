@@ -2,6 +2,7 @@
 /**
  * Профиль пользователя
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $successMessage = '';
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3><i class="fas fa-user me-2"></i>Профиль пользователя</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
             <li class="breadcrumb-item active">Профиль</li>
         </ol>
     </nav>
@@ -135,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <hr>
                 
-                <a href="/polesie/index.php?page=change_password" class="btn btn-warning w-100 mb-2">
+                <a href="<?php echo BASE_URL; ?>/index.php?page=change_password" class="btn btn-warning w-100 mb-2">
                     <i class="fas fa-key me-2"></i>Сменить пароль
                 </a>
             </div>

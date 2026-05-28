@@ -2,6 +2,7 @@
 /**
  * Смена пароля
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $successMessage = '';
@@ -41,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3><i class="fas fa-key me-2"></i>Смена пароля</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=profile">Профиль</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=profile">Профиль</a></li>
             <li class="breadcrumb-item active">Смена пароля</li>
         </ol>
     </nav>
@@ -91,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-2"></i>Сменить пароль
                     </button>
-                    <a href="/polesie/index.php?page=profile" class="btn btn-secondary">
+                    <a href="<?php echo BASE_URL; ?>/index.php?page=profile" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Назад к профилю
                     </a>
                 </form>
