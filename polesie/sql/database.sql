@@ -417,3 +417,38 @@ INSERT INTO defects (defect_code, name, description, category, severity) VALUES
 ('DEF-005', 'Недостаточная изоляция', 'Сопротивление изоляции ниже нормы', 'Электрические', 'critical'),
 ('DEF-006', 'Дефект окраски', 'Неравномерное нанесение краски', 'Внешние', 'minor'),
 ('DEF-007', 'Люфт вала', 'Превышение допустимого люфта', 'Механические', 'major');
+
+-- Заказы
+INSERT INTO orders (order_number, customer_id, order_date, delivery_date, status, priority, total_amount, notes, manager_id) VALUES
+('ORD-2024-001', 1, '2024-01-15', '2024-02-15', 'completed', 'normal', 75000.00, 'Поставка электродвигателей для насосной станции', 2),
+('ORD-2024-002', 2, '2024-01-20', '2024-02-20', 'in_production', 'high', 45000.00, 'Срочный заказ на генераторы', 2),
+('ORD-2024-003', 3, '2024-01-25', '2024-03-01', 'in_production', 'normal', 120000.00, 'Комплект трансформаторов для подстанции', 2),
+('ORD-2024-004', 4, '2024-02-01', '2024-03-15', 'new', 'normal', 30000.00, 'Запасные части для ремонта', 2),
+('ORD-2024-005', 1, '2024-02-05', '2024-03-20', 'confirmed', 'urgent', 95000.00, 'Дополнительная партия двигателей', 2);
+
+-- Позиции заказов
+INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price, planned_start_date, planned_end_date, status) VALUES
+(1, 1, 20, 2500.00, 50000.00, '2024-01-20', '2024-02-10', 'completed'),
+(1, 2, 10, 1500.00, 15000.00, '2024-01-20', '2024-02-10', 'completed'),
+(2, 3, 3, 15000.00, 45000.00, '2024-01-25', '2024-02-15', 'in_progress'),
+(3, 4, 15, 8000.00, 120000.00, '2024-02-01', '2024-02-28', 'in_progress'),
+(4, 1, 8, 2500.00, 20000.00, '2024-02-15', '2024-03-10', 'pending'),
+(4, 2, 5, 1500.00, 7500.00, '2024-02-15', '2024-03-10', 'pending'),
+(5, 1, 30, 2500.00, 75000.00, '2024-02-10', '2024-03-15', 'pending'),
+(5, 3, 2, 15000.00, 30000.00, '2024-02-10', '2024-03-15', 'pending');
+
+-- Производственные задания
+INSERT INTO production_tasks (task_number, order_item_id, route_id, status, quantity_planned, quantity_completed, quantity_rejected, start_date, end_date, assigned_to, workstation, priority, notes) VALUES
+('TASK-2024-001', 1, 1, 'completed', 20, 20, 0, '2024-01-20', '2024-02-10', 3, 'WS-008', 5, 'Выполнено в срок'),
+('TASK-2024-002', 2, 1, 'completed', 10, 10, 0, '2024-01-20', '2024-02-10', 3, 'WS-008', 5, 'Выполнено в срок'),
+('TASK-2024-003', 3, 2, 'in_progress', 3, 1, 0, '2024-01-25', '2024-02-15', 3, 'WS-004', 3, 'В производстве'),
+('TASK-2024-004', 4, 3, 'in_progress', 15, 5, 0, '2024-02-01', '2024-02-28', 3, 'WS-001', 5, 'В производстве'),
+('TASK-2024-005', 5, 1, 'released', 8, 0, 0, '2024-02-15', '2024-03-10', NULL, 'WS-002', 5, 'Готово к запуску');
+
+-- Проверки качества
+INSERT INTO quality_checks (check_number, task_id, task_operation_id, check_type, inspector_id, quantity_checked, quantity_passed, quantity_defective, result, defect_description, notes) VALUES
+('QC-2024-001', 1, NULL, 'final', 4, 20, 20, 0, 'passed', NULL, 'Все параметры в норме'),
+('QC-2024-002', 2, NULL, 'final', 4, 10, 10, 0, 'passed', NULL, 'Все параметры в норме'),
+('QC-2024-003', 3, NULL, 'in_process', 4, 1, 1, 0, 'passed', NULL, 'Промежуточная проверка'),
+('QC-2024-004', 4, NULL, 'in_process', 4, 5, 4, 1, 'conditional', 'Незначительные дефекты окраски', 'Допущено с замечаниями'),
+('QC-2024-005', 1, NULL, 'outgoing', 4, 20, 19, 1, 'passed', 'Минимальные косметические дефекты', 'Отгружено покупателю');
