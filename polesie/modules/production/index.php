@@ -128,7 +128,7 @@ if ($action === 'list') {
     
     $whereClause = !empty($where) ? "WHERE " . implode(' AND ', $where) : "";
     
-    $stmt = $db->prepare("SELECT pt.*, p.name as product_name, o.order_number, oi.quantity_planned as order_quantity
+    $stmt = $db->prepare("SELECT pt.*, p.name as product_name, o.order_number
                           FROM production_tasks pt
                           LEFT JOIN order_items oi ON pt.order_item_id = oi.id
                           LEFT JOIN products p ON oi.product_id = p.id
@@ -290,7 +290,7 @@ if ($action === 'create') {
                                         ? round(($task['quantity_completed'] / $task['quantity_planned']) * 100) 
                                         : 0;
                                     ?>
-                                    <div class="progress-bar" style="width: <?php echo $percent; ?>%"></div>
+                                    <div class="progress-bar bg-primary" style="width: <?php echo $percent; ?>%"></div>
                                 </div>
                             </td>
                             <td><span class="badge <?php echo $statusInfo['class']; ?>"><?php echo $statusInfo['text']; ?></span></td>

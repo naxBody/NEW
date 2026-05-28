@@ -10,7 +10,7 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="<?php echo BASE_URL; ?>/assets/css/style.css" rel="stylesheet">
     
@@ -29,8 +29,8 @@
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--light-bg);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f5f7fb;
             color: var(--dark-text);
         }
         
@@ -40,7 +40,7 @@
             left: 0;
             height: 100vh;
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(180deg, #0d6efd 0%, #0a58ca 100%);
             color: white;
             overflow-y: auto;
             z-index: 1000;
@@ -51,6 +51,7 @@
             padding: 1.5rem;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             text-align: center;
+            background: rgba(0,0,0,0.1);
         }
         
         .sidebar-brand h4 {
@@ -75,13 +76,14 @@
             color: rgba(255,255,255,0.85);
             text-decoration: none;
             transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
         
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
             background-color: rgba(255,255,255,0.15);
             color: white;
-            border-left: 4px solid white;
+            border-left: 3px solid white;
         }
         
         .sidebar-menu a i {
@@ -98,8 +100,8 @@
         
         .top-navbar {
             background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-            padding: 0.75rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 0.875rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -118,12 +120,13 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent-color);
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 1.1rem;
         }
         
         .content-area {
@@ -132,20 +135,28 @@
         
         .card {
             border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.05);
+            border-radius: 0.75rem;
             margin-bottom: 1.5rem;
+            background: white;
         }
         
         .card-header {
             background: white;
-            border-bottom: 2px solid var(--light-bg);
+            border-bottom: 1px solid #e9ecef;
             font-weight: 600;
             padding: 1rem 1.25rem;
+            color: #495057;
         }
         
         .stat-card {
-            border-left: 4px solid var(--accent-color);
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
         }
         
         .stat-card.success { border-left-color: var(--success-color); }
@@ -153,26 +164,37 @@
         .stat-card.danger { border-left-color: var(--danger-color); }
         
         .stat-number {
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 700;
             color: var(--primary-color);
         }
         
         .stat-label {
-            color: #718096;
+            color: #6c757d;
             font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
         
         .badge {
-            padding: 0.35rem 0.65rem;
+            padding: 0.5rem 0.75rem;
             font-weight: 500;
-            border-radius: 0.375rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
         }
         
         .table th {
             font-weight: 600;
-            color: #4a5568;
+            color: #495057;
             border-top: none;
+            background-color: #f8f9fa;
+            padding: 1rem 0.75rem;
+        }
+        
+        .table td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
         }
         
         .btn-primary {
@@ -181,8 +203,10 @@
         }
         
         .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
+            background-color: #0b5ed7;
+            border-color: #0b5ed7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
         }
         
         .page-title {
@@ -195,6 +219,20 @@
             background: transparent;
             padding: 0;
             margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+        
+        .breadcrumb-item.active {
+            color: #adb5bd;
         }
         
         @media (max-width: 768px) {
