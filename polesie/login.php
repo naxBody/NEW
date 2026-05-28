@@ -3,8 +3,8 @@
  * Страница входа в систему
  */
 
-// Определяем базовый путь
-define('BASE_PATH', dirname(__DIR__));
+// Определяем базовый путь - текущая директория проекта
+define('BASE_PATH', dirname(__FILE__));
 
 // Подключаем конфигурацию
 require_once BASE_PATH . '/config/config.php';
