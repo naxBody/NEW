@@ -2,8 +2,10 @@
 /**
  * Панель управления (Dashboard)
  */
-global $db;
 require_once BASE_PATH . '/includes/header.php';
+
+// Получаем подключение к базе данных
+$db = Database::getInstance()->getConnection();
 
 // Получаем статистику
 $stats = [];

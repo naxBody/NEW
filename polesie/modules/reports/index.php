@@ -2,8 +2,10 @@
 /**
  * Модуль отчетов и аналитики
  */
-global $db;
 require_once BASE_PATH . '/includes/header.php';
+
+// Получаем подключение к базе данных
+$db = Database::getInstance()->getConnection();
 
 $reportType = $_GET['type'] ?? 'summary';
 $dateFrom = $_GET['date_from'] ?? date('Y-m-01');

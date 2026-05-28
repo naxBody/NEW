@@ -60,7 +60,7 @@ if (in_array($page, $publicPages)) {
 
 // Проверка авторизации для защищенных страниц
 if (!$auth->isLoggedIn()) {
-    redirect('/polesie/login.php');
+    redirect(BASE_URL . '/login.php');
     exit;
 }
 

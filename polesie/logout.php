@@ -10,4 +10,4 @@ require_once 'includes/auth.php';
 $auth = new Auth();
 $auth->logout();
 
-redirect('/polesie/login.php');
+redirect(BASE_URL . '/login.php');
