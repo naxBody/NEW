@@ -2,8 +2,8 @@
 -- Версия: 1.0
 -- Дата создания: 2024
 
-CREATE DATABASE IF NOT EXISTS polesie_production CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE polesie_production;
+CREATE DATABASE IF NOT EXISTS db_polesie CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE db_polesie;
 
 -- Таблица пользователей (сотрудники)
 CREATE TABLE users (

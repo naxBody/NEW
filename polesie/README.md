@@ -74,7 +74,7 @@
    - Запустите XAMPP Control Panel
    - Запустите Apache и MySQL
    - Откройте phpMyAdmin: http://localhost/phpmyadmin
-   - Создайте новую базу данных `polesie_production`
+   - Создайте новую базу данных `db_polesie`
    - Импортируйте файл `sql/database.sql`
 
 4. **Настройте подключение к БД**
@@ -82,7 +82,7 @@
    - При необходимости измените параметры подключения:
      ```php
      define('DB_HOST', 'localhost');
-     define('DB_NAME', 'polesie_production');
+     define('DB_NAME', 'db_polesie');
      define('DB_USER', 'root');
      define('DB_PASS', '');
      ```
