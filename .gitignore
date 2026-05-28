@@ -1,1 +1,27 @@
-Nothing needs to be added to the .gitignore file based on the provided changes. The added files are all PHP source files (.php) which are legitimate code files that should be tracked in version control. No build artifacts, dependencies, temporary files, or other items requiring exclusion are present in the change list.
+```
+# Dependencies
+vendor/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+```

@@ -12,7 +12,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/polesie/assets/css/style.css" rel="stylesheet">
+    <link href="<?php echo BASE_URL; ?>/assets/css/style.css" rel="stylesheet">
     
     <style>
         :root {
@@ -221,54 +221,54 @@
         </div>
         
         <nav class="sidebar-menu">
-            <a href="/polesie/index.php?page=dashboard" class="<?php echo ($activePage ?? '') == 'dashboard' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=dashboard" class="<?php echo ($activePage ?? '') == 'dashboard' ? 'active' : ''; ?>">
                 <i class="fas fa-chart-line"></i>
                 <span>Панель управления</span>
             </a>
             
             <?php if ($auth->canAccessModule('orders')): ?>
-            <a href="/polesie/index.php?page=orders" class="<?php echo ($activePage ?? '') == 'orders' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=orders" class="<?php echo ($activePage ?? '') == 'orders' ? 'active' : ''; ?>">
                 <i class="fas fa-shopping-cart"></i>
                 <span>Заказы</span>
             </a>
             <?php endif; ?>
             
             <?php if ($auth->canAccessModule('production')): ?>
-            <a href="/polesie/index.php?page=production" class="<?php echo ($activePage ?? '') == 'production' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=production" class="<?php echo ($activePage ?? '') == 'production' ? 'active' : ''; ?>">
                 <i class="fas fa-cogs"></i>
                 <span>Производство</span>
             </a>
             <?php endif; ?>
             
             <?php if ($auth->canAccessModule('quality')): ?>
-            <a href="/polesie/index.php?page=quality" class="<?php echo ($activePage ?? '') == 'quality' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=quality" class="<?php echo ($activePage ?? '') == 'quality' ? 'active' : ''; ?>">
                 <i class="fas fa-check-circle"></i>
                 <span>Контроль качества</span>
             </a>
             <?php endif; ?>
             
             <?php if ($auth->canAccessModule('warehouse')): ?>
-            <a href="/polesie/index.php?page=warehouse" class="<?php echo ($activePage ?? '') == 'warehouse' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=warehouse" class="<?php echo ($activePage ?? '') == 'warehouse' ? 'active' : ''; ?>">
                 <i class="fas fa-warehouse"></i>
                 <span>Склад</span>
             </a>
             <?php endif; ?>
             
             <?php if ($auth->canAccessModule('employees')): ?>
-            <a href="/polesie/index.php?page=employees" class="<?php echo ($activePage ?? '') == 'employees' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=employees" class="<?php echo ($activePage ?? '') == 'employees' ? 'active' : ''; ?>">
                 <i class="fas fa-users"></i>
                 <span>Сотрудники</span>
             </a>
             <?php endif; ?>
             
             <?php if ($auth->canAccessModule('reports')): ?>
-            <a href="/polesie/index.php?page=reports" class="<?php echo ($activePage ?? '') == 'reports' ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=reports" class="<?php echo ($activePage ?? '') == 'reports' ? 'active' : ''; ?>">
                 <i class="fas fa-file-alt"></i>
                 <span>Отчеты</span>
             </a>
             <?php endif; ?>
             
-            <a href="/polesie/index.php?page=settings">
+            <a href="<?php echo BASE_URL; ?>/index.php?page=settings">
                 <i class="fas fa-cog"></i>
                 <span>Настройки</span>
             </a>
@@ -295,10 +295,10 @@
                         <span class="d-none d-md-inline"><?php echo e($user['full_name'] ?? 'Гость'); ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/polesie/index.php?page=profile"><i class="fas fa-user me-2"></i>Профиль</a></li>
-                        <li><a class="dropdown-item" href="/polesie/index.php?page=change_password"><i class="fas fa-key me-2"></i>Смена пароля</a></li>
+                        <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/index.php?page=profile"><i class="fas fa-user me-2"></i>Профиль</a></li>
+                        <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/index.php?page=change_password"><i class="fas fa-key me-2"></i>Смена пароля</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/polesie/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Выход</a></li>
+                        <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Выход</a></li>
                     </ul>
                 </div>
             </div>

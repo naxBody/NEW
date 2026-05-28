@@ -2,6 +2,7 @@
 /**
  * Модуль контроля качества
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $action = $_GET['action'] ?? 'list';
@@ -155,8 +156,8 @@ if ($action === 'create') {
     ?></h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=quality">Контроль качества</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=quality">Контроль качества</a></li>
             <?php if ($action === 'view' || $action === 'create'): ?>
             <li class="breadcrumb-item active"><?php echo $action === 'create' ? 'Создание' : 'Просмотр'; ?></li>
             <?php endif; ?>
@@ -177,7 +178,7 @@ if ($action === 'create') {
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-filter me-2"></i>Фильтры</span>
         <?php if ($auth->hasRole(['admin', 'manager', 'quality_controller'])): ?>
-        <a href="/polesie/index.php?page=quality_create" class="btn btn-primary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=quality_create" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Новая проверка
         </a>
         <?php endif; ?>
@@ -244,7 +245,7 @@ if ($action === 'create') {
                         ?>
                         <tr>
                             <td>
-                                <a href="/polesie/index.php?page=quality_view&id=<?php echo $check['id']; ?>">
+                                <a href="<?php echo BASE_URL; ?>/index.php?page=quality_view&id=<?php echo $check['id']; ?>">
                                     <?php echo e($check['check_number']); ?>
                                 </a>
                             </td>
@@ -256,7 +257,7 @@ if ($action === 'create') {
                             <td><span class="badge <?php echo $resultInfo['class']; ?>"><?php echo $resultInfo['text']; ?></span></td>
                             <td><?php echo e($check['inspector_name']); ?></td>
                             <td>
-                                <a href="/polesie/index.php?page=quality_view&id=<?php echo $check['id']; ?>" class="btn btn-sm btn-outline-primary">
+                                <a href="<?php echo BASE_URL; ?>/index.php?page=quality_view&id=<?php echo $check['id']; ?>" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </td>
@@ -441,7 +442,7 @@ if ($action === 'create') {
 </div>
 
 <div class="mt-4">
-    <a href="/polesie/index.php?page=quality" class="btn btn-secondary">
+    <a href="<?php echo BASE_URL; ?>/index.php?page=quality" class="btn btn-secondary">
         <i class="fas fa-arrow-left me-2"></i>Назад к списку
     </a>
 </div>
@@ -546,7 +547,7 @@ if ($action === 'create') {
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save me-2"></i>Сохранить проверку
         </button>
-        <a href="/polesie/index.php?page=quality" class="btn btn-secondary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=quality" class="btn btn-secondary">
             <i class="fas fa-times me-2"></i>Отмена
         </a>
     </div>

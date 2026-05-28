@@ -2,6 +2,7 @@
 /**
  * Модуль отчетов и аналитики
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $reportType = $_GET['type'] ?? 'summary';
@@ -110,7 +111,7 @@ $activePage = 'reports';
     <h3><i class="fas fa-chart-bar me-2"></i>Отчеты и аналитика</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
             <li class="breadcrumb-item active">Отчеты</li>
         </ol>
     </nav>
@@ -147,7 +148,7 @@ $activePage = 'reports';
                 <button type="submit" class="btn btn-primary me-2">
                     <i class="fas fa-filter me-2"></i>Применить
                 </button>
-                <a href="/polesie/modules/reports/export.php?type=<?php echo e($reportType); ?>&date_from=<?php echo e($dateFrom); ?>&date_to=<?php echo e($dateTo); ?>" 
+                <a href="<?php echo BASE_URL; ?>/modules/reports/export.php?type=<?php echo e($reportType); ?>&date_from=<?php echo e($dateFrom); ?>&date_to=<?php echo e($dateTo); ?>" 
                    class="btn btn-success" target="_blank">
                     <i class="fas fa-file-excel me-2"></i>Экспорт
                 </a>

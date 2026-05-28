@@ -2,6 +2,7 @@
 /**
  * Модуль управления складом
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 $action = $_GET['action'] ?? 'list';
@@ -126,8 +127,8 @@ if ($action === 'transaction_create') {
     ?></h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=warehouse">Склад</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=warehouse">Склад</a></li>
             <?php if ($action === 'transaction_create'): ?>
             <li class="breadcrumb-item active">Движение товаров</li>
             <?php endif; ?>
@@ -147,7 +148,7 @@ if ($action === 'transaction_create') {
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="fas fa-filter me-2"></i>Фильтры</span>
-        <a href="/polesie/index.php?page=inventory_transaction" class="btn btn-primary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=inventory_transaction" class="btn btn-primary">
             <i class="fas fa-plus me-2"></i>Новая операция
         </a>
     </div>
@@ -311,7 +312,7 @@ if ($action === 'transaction_create') {
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-save me-2"></i>Выполнить операцию
         </button>
-        <a href="/polesie/index.php?page=warehouse" class="btn btn-secondary">
+        <a href="<?php echo BASE_URL; ?>/index.php?page=warehouse" class="btn btn-secondary">
             <i class="fas fa-times me-2"></i>Отмена
         </a>
     </div>

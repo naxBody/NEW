@@ -2,6 +2,7 @@
 /**
  * Настройки системы
  */
+global $db;
 require_once BASE_PATH . '/includes/header.php';
 
 // Обработка формы сохранения настроек
@@ -42,7 +43,7 @@ while ($row = $stmt->fetch()) {
     <h3><i class="fas fa-cog me-2"></i>Настройки системы</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/polesie/index.php?page=dashboard">Главная</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo BASE_URL; ?>/index.php?page=dashboard">Главная</a></li>
             <li class="breadcrumb-item active">Настройки</li>
         </ol>
     </nav>

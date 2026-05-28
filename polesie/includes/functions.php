@@ -32,9 +32,13 @@ function getCurrentUser() {
 }
 
 /**
- * Перенаправление
+ * Перенаправление с учетом базового пути
  */
 function redirect($url) {
+    // Если URL начинается с http, /polesie или содержит BASE_URL, оставляем как есть
+    if (strpos($url, 'http') !== 0 && strpos($url, BASE_URL) !== 0) {
+        $url = BASE_URL . $url;
+    }
     header('Location: ' . $url);
     exit;
 }
