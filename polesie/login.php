@@ -2,11 +2,20 @@
 /**
  * Страница входа в систему
  */
-session_start();
-require_once '../config/config.php';
-require_once '../includes/database.php';
-require_once '../includes/auth.php';
-require_once '../includes/functions.php';
+
+// Определяем базовый путь
+define('BASE_PATH', dirname(__DIR__));
+
+// Подключаем конфигурацию
+require_once BASE_PATH . '/config/config.php';
+require_once BASE_PATH . '/includes/database.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/functions.php';
+
+// Запускаем сессию только если она ещё не запущена
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Если уже авторизован - перенаправляем на главную
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {

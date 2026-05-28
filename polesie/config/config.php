@@ -17,8 +17,10 @@ define('APP_VERSION', '1.0.0');
 define('APP_URL', 'http://localhost/polesie');
 define('TIMEZONE', 'Europe/Minsk');
 
-// Пути к директориям
-define('BASE_PATH', dirname(__DIR__));
+// Пути к директориям (определяем только если ещё не определены)
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', dirname(__DIR__));
+}
 define('UPLOAD_PATH', BASE_PATH . '/uploads');
 define('ASSETS_PATH', BASE_PATH . '/assets');
 
