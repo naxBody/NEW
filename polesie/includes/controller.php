@@ -19,7 +19,7 @@ class Controller {
      */
     protected function requireAuth() {
         if (!$this->auth->isLoggedIn()) {
-            header('Location: /polesie/index.php?page=login');
+            header('Location: ' . BASE_URL . '/index.php?page=login');
             exit;
         }
     }

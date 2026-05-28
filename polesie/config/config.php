@@ -14,8 +14,13 @@ define('DB_CHARSET', 'utf8mb4');
 // Настройки приложения
 define('APP_NAME', 'Полесьеэлектромаш - Система управления производством');
 define('APP_VERSION', '1.0.0');
-define('APP_URL', 'http://localhost/polesie');
-define('BASE_URL', '/polesie');
+
+// Автоматическое определение BASE_URL и APP_URL на основе текущего пути
+$scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+$basePath = str_replace('\\', '/', $scriptPath);
+define('BASE_URL', $basePath);
+define('APP_URL', 'http://' . $_SERVER['HTTP_HOST'] . $basePath);
+
 define('TIMEZONE', 'Europe/Minsk');
 
 // Пути к директориям (определяем только если ещё не определены)

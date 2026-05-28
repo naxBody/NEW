@@ -16,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Если уже авторизован - перенаправляем на главную
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    redirect('/polesie/index.php?page=dashboard');
+    redirect(BASE_URL . '/index.php?page=dashboard');
 }
 
 $error = '';
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $auth->login($username, $password);
         
         if ($result['success']) {
-            redirect('/polesie/index.php?page=dashboard');
+            redirect(BASE_URL . '/index.php?page=dashboard');
         } else {
             $error = $result['message'];
         }

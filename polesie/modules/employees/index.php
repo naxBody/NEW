@@ -2,8 +2,10 @@
 /**
  * Модуль управления сотрудниками
  */
-global $db;
 require_once BASE_PATH . '/includes/header.php';
+
+// Получаем подключение к базе данных
+$db = Database::getInstance()->getConnection();
 
 $action = $_GET['action'] ?? 'list';
 $id = $_GET['id'] ?? null;
