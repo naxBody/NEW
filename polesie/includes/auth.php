@@ -19,7 +19,8 @@ class Auth {
             $stmt->execute([$username]);
             $user = $stmt->fetch();
             
-            if ($user && password_verify($password, $user['password_hash'])) {
+            // Проверка пароля без хеширования (прямое сравнение)
+            if ($user && $user['password_hash'] === $password) {
                 // Обновляем время последнего входа
                 $updateStmt = $this->db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
                 $updateStmt->execute([$user['id']]);
@@ -142,8 +143,8 @@ class Auth {
                 return ['success' => false, 'message' => 'Пользователь с таким именем уже существует'];
             }
             
-            // Хеширование пароля
-            $passwordHash = password_hash($data['password'], PASSWORD_DEFAULT);
+            // Сохранение пароля без хеширования (в открытом виде)
+            $passwordHash = $data['password'];
             
             // Вставка нового пользователя
             $stmt = $this->db->prepare("
@@ -201,19 +202,18 @@ class Auth {
      */
     public function changePassword($userId, $oldPassword, $newPassword) {
         try {
-            // Проверка старого пароля
+            // Проверка старого пароля (прямое сравнение)
             $stmt = $this->db->prepare("SELECT password_hash FROM users WHERE id = ?");
             $stmt->execute([$userId]);
             $user = $stmt->fetch();
             
-            if (!$user || !password_verify($oldPassword, $user['password_hash'])) {
+            if (!$user || $user['password_hash'] !== $oldPassword) {
                 return ['success' => false, 'message' => 'Неверный текущий пароль'];
             }
             
-            // Обновление пароля
-            $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+            // Обновление пароля (без хеширования)
             $updateStmt = $this->db->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
-            $updateStmt->execute([$passwordHash, $userId]);
+            $updateStmt->execute([$newPassword, $userId]);
             
             $this->logAction('password_changed', 'auth', $userId);
             

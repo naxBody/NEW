@@ -322,13 +322,13 @@ CREATE TABLE settings (
 
 -- Вставка начальных данных
 
--- Пользователи (пароль по умолчанию: admin123)
+-- Пользователи (пароль по умолчанию: admin123 - хранится в открытом виде)
 INSERT INTO users (username, password_hash, full_name, email, role, department, position) VALUES
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Администратор Системы', 'admin@polesie.by', 'admin', 'Administration', 'Системный администратор'),
-('director', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Иванов Иван Иванович', 'director@polesie.by', 'manager', 'Management', 'Генеральный директор'),
-('tech_lead', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Петров Петр Петрович', 'petrov@polesie.by', 'technologist', 'Technology', 'Ведущий технолог'),
-('quality_head', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Сидоров Сидор Сидорович', 'sidorov@polesie.by', 'quality_controller', 'Quality', 'Начальник ОТК'),
-('warehouse_mgr', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Козлов Козел Козлович', 'kozlov@polesie.by', 'warehouse_worker', 'Warehouse', 'Заведующий складом');
+('admin', 'admin123', 'Администратор Системы', 'admin@polesie.by', 'admin', 'Administration', 'Системный администратор'),
+('director', 'admin123', 'Иванов Иван Иванович', 'director@polesie.by', 'manager', 'Management', 'Генеральный директор'),
+('tech_lead', 'admin123', 'Петров Петр Петрович', 'petrov@polesie.by', 'technologist', 'Technology', 'Ведущий технолог'),
+('quality_head', 'admin123', 'Сидоров Сидор Сидорович', 'sidorov@polesie.by', 'quality_controller', 'Quality', 'Начальник ОТК'),
+('warehouse_mgr', 'admin123', 'Козлов Козел Козлович', 'kozlov@polesie.by', 'warehouse_worker', 'Warehouse', 'Заведующий складом');
 
 -- Категории продукции
 INSERT INTO product_categories (name, description) VALUES
