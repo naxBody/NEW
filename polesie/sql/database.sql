@@ -408,6 +408,45 @@ INSERT INTO settings (setting_key, setting_value, setting_type, description) VAL
 ('production_working_hours', '8', 'integer', 'Продолжительность рабочей смены в часах'),
 ('quality_auto_check_required', 'true', 'boolean', 'Требуется ли автоматическая проверка качества');
 
+-- Технологические маршруты (должны быть созданы перед производственными заданиями)
+INSERT INTO technology_routes (product_id, name, version) VALUES
+(1, 'Маршрут производства АД-100', '1.0'),
+(2, 'Маршрут производства АД-50', '1.0'),
+(3, 'Маршрут производства Г-200', '1.0'),
+(4, 'Маршрут производства Т-500', '1.0');
+
+-- Операции в технологических маршрутах
+INSERT INTO route_operations (route_id, operation_id, sequence_order, workstation, standard_time) VALUES
+-- Маршрут 1: АД-100
+(1, 1, 10, 'WS-001', 30),
+(1, 2, 20, 'WS-001', 60),
+(1, 5, 30, 'WS-004', 120),
+(1, 6, 40, 'WS-006', 90),
+(1, 7, 50, 'WS-007', 180),
+(1, 8, 60, 'WS-008', 60),
+(1, 9, 70, 'WS-009', 40),
+(1, 10, 80, 'WS-010', 30),
+(1, 11, 90, NULL, 45),
+(1, 12, 100, NULL, 15),
+-- Маршрут 2: Г-200
+(2, 1, 10, 'WS-001', 45),
+(2, 3, 20, 'WS-003', 90),
+(2, 5, 30, 'WS-005', 180),
+(2, 6, 40, 'WS-006', 120),
+(2, 7, 50, 'WS-007', 240),
+(2, 8, 60, 'WS-008', 90),
+(2, 10, 70, 'WS-010', 45),
+(2, 11, 80, NULL, 60),
+(2, 12, 90, NULL, 20),
+-- Маршрут 3: Т-500
+(3, 1, 10, 'WS-002', 60),
+(3, 3, 20, 'WS-003', 120),
+(3, 4, 30, 'WS-003', 45),
+(3, 8, 40, 'WS-008', 180),
+(3, 10, 50, 'WS-010', 60),
+(3, 11, 60, NULL, 90),
+(3, 12, 70, NULL, 30);
+
 -- Дефекты
 INSERT INTO defects (defect_code, name, description, category, severity) VALUES
 ('DEF-001', 'Царапина корпуса', 'Механическое повреждение поверхности', 'Механические', 'minor'),
@@ -437,7 +476,7 @@ INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price
 (5, 1, 30, 2500.00, 75000.00, '2024-02-10', '2024-03-15', 'pending'),
 (5, 3, 2, 15000.00, 30000.00, '2024-02-10', '2024-03-15', 'pending');
 
--- Производственные задания
+-- Производственные задания (используем route_id из созданных маршрутов)
 INSERT INTO production_tasks (task_number, order_item_id, route_id, status, quantity_planned, quantity_completed, quantity_rejected, start_date, end_date, assigned_to, workstation, priority, notes) VALUES
 ('TASK-2024-001', 1, 1, 'completed', 20, 20, 0, '2024-01-20', '2024-02-10', 3, 'WS-008', 5, 'Выполнено в срок'),
 ('TASK-2024-002', 2, 1, 'completed', 10, 10, 0, '2024-01-20', '2024-02-10', 3, 'WS-008', 5, 'Выполнено в срок'),

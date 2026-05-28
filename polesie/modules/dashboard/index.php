@@ -43,7 +43,7 @@ $stmt = $db->query("SELECT o.*, c.name as customer_name
 $recentOrders = $stmt->fetchAll();
 
 // Активные производственные задания
-$stmt = $db->query("SELECT pt.*, p.name as product_name, COALESCE(oi.quantity, pt.quantity_planned) as quantity_planned
+$stmt = $db->query("SELECT pt.*, p.name as product_name, pt.quantity_planned
     FROM production_tasks pt
     LEFT JOIN order_items oi ON pt.order_item_id = oi.id
     LEFT JOIN products p ON oi.product_id = p.id
