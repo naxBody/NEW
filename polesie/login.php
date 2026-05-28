@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 100%);
+            background: #f1f5f9;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -67,29 +67,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         .login-card {
             background: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            border: 1px solid #e2e8f0;
             overflow: hidden;
-            max-width: 450px;
+            max-width: 420px;
             width: 100%;
         }
         
         .login-header {
-            background: linear-gradient(135deg, #2c5282 0%, #3182ce 100%);
-            color: white;
+            background: #1e293b;
+            color: #f1f5f9;
             padding: 2rem;
             text-align: center;
         }
         
         .login-header h2 {
             margin: 0;
-            font-weight: 700;
+            font-weight: 600;
+            font-size: 1.5rem;
         }
         
         .login-header p {
             margin: 0.5rem 0 0;
-            opacity: 0.9;
-            font-size: 0.9rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
         }
         
         .login-body {
@@ -97,25 +99,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .form-control:focus {
-            border-color: #3182ce;
-            box-shadow: 0 0 0 0.2rem rgba(49, 130, 206, 0.25);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.1);
         }
         
         .btn-login {
-            background: linear-gradient(135deg, #2c5282 0%, #3182ce 100%);
+            background: #475569;
             border: none;
-            padding: 0.75rem;
-            font-weight: 600;
+            padding: 0.625rem;
+            font-weight: 500;
         }
         
         .btn-login:hover {
-            background: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+            background: #334155;
         }
         
         .company-info {
             text-align: center;
-            color: rgba(255,255,255,0.8);
+            color: #64748b;
             margin-top: 2rem;
+            font-size: 0.875rem;
         }
     </style>
 </head>

@@ -16,21 +16,21 @@
     
     <style>
         :root {
-            --primary-color: #2c5282;
-            --secondary-color: #2b6cb0;
-            --accent-color: #3182ce;
-            --success-color: #38a169;
-            --warning-color: #d69e2e;
-            --danger-color: #e53e3e;
-            --info-color: #319795;
-            --light-bg: #f7fafc;
-            --dark-text: #2d3748;
+            --primary-color: #475569;
+            --secondary-color: #64748b;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-bg: #f1f5f9;
+            --dark-text: #1e293b;
             --sidebar-width: 260px;
         }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #f5f7fb;
+            background-color: #f8fafc;
             color: var(--dark-text);
         }
         
@@ -40,8 +40,8 @@
             left: 0;
             height: 100vh;
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, #0d6efd 0%, #0a58ca 100%);
-            color: white;
+            background: #1e293b;
+            color: #cbd5e1;
             overflow-y: auto;
             z-index: 1000;
             transition: transform 0.3s ease;
@@ -49,20 +49,21 @@
         
         .sidebar-brand {
             padding: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid #334155;
             text-align: center;
-            background: rgba(0,0,0,0.1);
+            background: #0f172a;
         }
         
         .sidebar-brand h4 {
             margin: 0;
-            font-weight: 700;
-            font-size: 1.3rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #f1f5f9;
         }
         
         .sidebar-brand small {
             font-size: 0.75rem;
-            opacity: 0.8;
+            color: #94a3b8;
         }
         
         .sidebar-menu {
@@ -72,18 +73,18 @@
         .sidebar-menu a {
             display: flex;
             align-items: center;
-            padding: 0.875rem 1.5rem;
-            color: rgba(255,255,255,0.85);
+            padding: 0.75rem 1.5rem;
+            color: #cbd5e1;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             border-left: 3px solid transparent;
         }
         
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background-color: rgba(255,255,255,0.15);
-            color: white;
-            border-left: 3px solid white;
+            background-color: #334155;
+            color: #f1f5f9;
+            border-left: 3px solid var(--accent-color);
         }
         
         .sidebar-menu a i {
@@ -100,7 +101,7 @@
         
         .top-navbar {
             background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             padding: 0.875rem 1.5rem;
             display: flex;
             justify-content: space-between;
@@ -117,122 +118,20 @@
         }
         
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
-            color: white;
+            background: #e2e8f0;
+            color: #475569;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
         .content-area {
             padding: 1.5rem;
-        }
-        
-        .card {
-            border: none;
-            box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.05);
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-            background: white;
-        }
-        
-        .card-header {
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            font-weight: 600;
-            padding: 1rem 1.25rem;
-            color: #495057;
-        }
-        
-        .stat-card {
-            border-left: 4px solid var(--primary-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
-        }
-        
-        .stat-card.success { border-left-color: var(--success-color); }
-        .stat-card.warning { border-left-color: var(--warning-color); }
-        .stat-card.danger { border-left-color: var(--danger-color); }
-        
-        .stat-number {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-        
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-        
-        .badge {
-            padding: 0.5rem 0.75rem;
-            font-weight: 500;
-            border-radius: 0.5rem;
-            font-size: 0.85rem;
-        }
-        
-        .table th {
-            font-weight: 600;
-            color: #495057;
-            border-top: none;
-            background-color: #f8f9fa;
-            padding: 1rem 0.75rem;
-        }
-        
-        .table td {
-            padding: 1rem 0.75rem;
-            vertical-align: middle;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-primary:hover {
-            background-color: #0b5ed7;
-            border-color: #0b5ed7;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
-        }
-        
-        .page-title {
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-        
-        .breadcrumb {
-            background: transparent;
-            padding: 0;
-            margin-bottom: 1rem;
-        }
-        
-        .breadcrumb-item a {
-            color: #6c757d;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        
-        .breadcrumb-item a:hover {
-            color: var(--primary-color);
-        }
-        
-        .breadcrumb-item.active {
-            color: #adb5bd;
         }
         
         @media (max-width: 768px) {
