@@ -491,3 +491,514 @@ INSERT INTO quality_checks (check_number, task_id, task_operation_id, check_type
 ('QC-2024-003', 3, NULL, 'in_process', 4, 1, 1, 0, 'passed', NULL, 'Промежуточная проверка'),
 ('QC-2024-004', 4, NULL, 'in_process', 4, 5, 4, 1, 'conditional', 'Незначительные дефекты окраски', 'Допущено с замечаниями'),
 ('QC-2024-005', 1, NULL, 'outgoing', 4, 20, 19, 1, 'passed', 'Минимальные косметические дефекты', 'Отгружено покупателю');
+
+-- =====================================================
+-- ДОКУМЕНТЫ ПРОИЗВОДСТВА (полная реализация)
+-- =====================================================
+
+-- План производства (месячный/квартальный)
+CREATE TABLE production_plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_number VARCHAR(50) UNIQUE NOT NULL,
+    plan_type ENUM('monthly', 'quarterly', 'annual') DEFAULT 'monthly',
+    plan_year INT NOT NULL,
+    plan_month INT, -- 1-12 для monthly, 1-4 для quarterly, NULL для annual
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status ENUM('draft', 'approved', 'in_progress', 'completed', 'cancelled') DEFAULT 'draft',
+    total_value_planned DECIMAL(15,2) DEFAULT 0,
+    total_value_actual DECIMAL(15,2) DEFAULT 0,
+    notes TEXT,
+    approved_by INT,
+    approved_at TIMESTAMP NULL,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Позиции плана производства
+CREATE TABLE production_plan_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity_planned INT NOT NULL,
+    quantity_actual INT DEFAULT 0,
+    unit_price DECIMAL(12,2),
+    total_value DECIMAL(15,2),
+    priority INT DEFAULT 5,
+    notes TEXT,
+    FOREIGN KEY (plan_id) REFERENCES production_plans(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Маршрутные карты (технологические документы)
+CREATE TABLE route_cards (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    card_number VARCHAR(50) UNIQUE NOT NULL,
+    product_id INT NOT NULL,
+    route_id INT NOT NULL,
+    version VARCHAR(20) DEFAULT '1.0',
+    status ENUM('draft', 'active', 'archived') DEFAULT 'draft',
+    material_consumption JSON COMMENT 'Расход материалов по операциям',
+    tooling_required JSON COMMENT 'Необходимая оснастка',
+    labor_norms JSON COMMENT 'Нормы труда по операциям',
+    quality_requirements TEXT,
+    safety_requirements TEXT,
+    developed_by INT,
+    checked_by INT,
+    approved_by INT,
+    valid_from DATE,
+    valid_until DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES technology_routes(id) ON DELETE CASCADE,
+    FOREIGN KEY (developed_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (checked_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Операции в маршрутной карте с детальными параметрами
+CREATE TABLE route_card_operations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    card_id INT NOT NULL,
+    operation_sequence INT NOT NULL,
+    operation_id INT NOT NULL,
+    operation_name VARCHAR(200),
+    workstation_code VARCHAR(50),
+    equipment_required TEXT,
+    tooling_required TEXT,
+    standard_time INT,
+    labor_grade INT COMMENT 'Разряд рабочего',
+    material_codes JSON COMMENT 'Коды используемых материалов',
+    quality_checkpoints JSON COMMENT 'Контрольные точки качества',
+    safety_instructions TEXT,
+    sketches JSON COMMENT 'Эскизы и схемы',
+    notes TEXT,
+    FOREIGN KEY (card_id) REFERENCES route_cards(id) ON DELETE CASCADE,
+    FOREIGN KEY (operation_id) REFERENCES operations(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Паспорта изделий (сертификаты качества на каждое изделие)
+CREATE TABLE product_passports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    passport_number VARCHAR(50) UNIQUE NOT NULL,
+    serial_number VARCHAR(100),
+    product_id INT NOT NULL,
+    production_task_id INT,
+    manufacture_date DATE NOT NULL,
+    warranty_period_months INT DEFAULT 24,
+    warranty_start_date DATE,
+    status ENUM('active', 'warranty_expired', 'recalled') DEFAULT 'active',
+    test_results JSON COMMENT 'Результаты испытаний',
+    quality_certificate_id INT,
+    components_used JSON COMMENT 'Использованные комплектующие',
+    materials_used JSON COMMENT 'Использованные материалы',
+    workers_involved JSON COMMENT 'Участники производства',
+    inspector_signature VARCHAR(100),
+    technical_director_signature VARCHAR(100),
+    qr_code_data TEXT,
+    pdf_document_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (production_task_id) REFERENCES production_tasks(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Товарно-транспортные накладные (ТТН)
+CREATE TABLE shipping_documents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    document_type ENUM('ttn', 'invoice', 'act', 'uppd') DEFAULT 'ttn',
+    document_number VARCHAR(50) UNIQUE NOT NULL,
+    document_date DATE NOT NULL,
+    order_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    carrier_name VARCHAR(200),
+    carrier_inn VARCHAR(20),
+    vehicle_number VARCHAR(50),
+    driver_name VARCHAR(100),
+    driver_license VARCHAR(50),
+    shipping_address TEXT,
+    delivery_date DATE,
+    status ENUM('draft', 'printed', 'shipped', 'delivered', 'signed', 'cancelled') DEFAULT 'draft',
+    total_weight DECIMAL(10,2),
+    total_volume DECIMAL(10,2),
+    packages_count INT,
+    freight_cost DECIMAL(12,2),
+    insurance_cost DECIMAL(12,2),
+    total_amount DECIMAL(15,2),
+    payment_terms TEXT,
+    notes TEXT,
+    shipped_by INT,
+    shipped_at TIMESTAMP NULL,
+    received_by_customer VARCHAR(100),
+    received_at TIMESTAMP NULL,
+    signature_scan_path VARCHAR(255),
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT,
+    FOREIGN KEY (shipped_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Позиции в транспортных документах
+CREATE TABLE shipping_document_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    shipping_document_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    unit VARCHAR(20),
+    weight_per_unit DECIMAL(10,2),
+    total_weight DECIMAL(10,2),
+    volume_per_unit DECIMAL(10,2),
+    total_volume DECIMAL(10,2),
+    unit_price DECIMAL(12,2),
+    total_price DECIMAL(15,2),
+    package_numbers TEXT COMMENT 'Номера мест/упаковок',
+    passport_numbers TEXT COMMENT 'Номера паспортов изделий',
+    FOREIGN KEY (shipping_document_id) REFERENCES shipping_documents(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Акты выполненных работ/оказанных услуг
+CREATE TABLE acts_of_work (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    act_number VARCHAR(50) UNIQUE NOT NULL,
+    act_date DATE NOT NULL,
+    order_id INT,
+    customer_id INT NOT NULL,
+    contract_number VARCHAR(50),
+    period_start DATE,
+    period_end DATE,
+    total_amount DECIMAL(15,2),
+    vat_rate DECIMAL(5,2) DEFAULT 20,
+    vat_amount DECIMAL(15,2),
+    total_with_vat DECIMAL(15,2),
+    status ENUM('draft', 'signed', 'sent', 'received', 'paid', 'cancelled') DEFAULT 'draft',
+    work_description TEXT,
+    customer_signature VARCHAR(100),
+    customer_seal BOOLEAN DEFAULT FALSE,
+    our_signature VARCHAR(100),
+    pdf_document_path VARCHAR(255),
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Счет-фактуры
+CREATE TABLE invoices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    invoice_number VARCHAR(50) UNIQUE NOT NULL,
+    invoice_date DATE NOT NULL,
+    order_id INT,
+    customer_id INT NOT NULL,
+    contract_number VARCHAR(50),
+    shipment_date DATE,
+    subtotal DECIMAL(15,2),
+    discount_percent DECIMAL(5,2) DEFAULT 0,
+    discount_amount DECIMAL(15,2),
+    taxable_amount DECIMAL(15,2),
+    vat_rate DECIMAL(5,2) DEFAULT 20,
+    vat_amount DECIMAL(15,2),
+    total_amount DECIMAL(15,2),
+    currency VARCHAR(3) DEFAULT 'BYN',
+    exchange_rate DECIMAL(10,4) DEFAULT 1,
+    payment_due_date DATE,
+    payment_status ENUM('unpaid', 'partial', 'paid', 'overdue', 'cancelled') DEFAULT 'unpaid',
+    payment_date DATE,
+    payment_document VARCHAR(100),
+    notes TEXT,
+    pdf_document_path VARCHAR(255),
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Позиции счетов-фактур
+CREATE TABLE invoice_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT NOT NULL,
+    product_id INT NOT NULL,
+    article VARCHAR(50),
+    name VARCHAR(200),
+    unit VARCHAR(20),
+    quantity INT NOT NULL,
+    unit_price DECIMAL(12,2) NOT NULL,
+    total_price DECIMAL(15,2) NOT NULL,
+    vat_rate DECIMAL(5,2) DEFAULT 20,
+    vat_amount DECIMAL(15,2),
+    country_of_origin VARCHAR(50) DEFAULT 'Беларусь',
+    customs_declaration VARCHAR(100),
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Спецификации к заказам
+CREATE TABLE specifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    spec_number VARCHAR(50) UNIQUE NOT NULL,
+    spec_date DATE NOT NULL,
+    order_id INT NOT NULL,
+    contract_number VARCHAR(50),
+    total_items INT,
+    total_amount DECIMAL(15,2),
+    delivery_terms TEXT,
+    packaging_requirements TEXT,
+    special_requirements TEXT,
+    status ENUM('draft', 'approved', 'changed', 'cancelled') DEFAULT 'draft',
+    approved_by INT,
+    approved_at TIMESTAMP NULL,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Журнал выдачи материалов в производство
+CREATE TABLE material_issue_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    issue_number VARCHAR(50) UNIQUE NOT NULL,
+    issue_date DATE NOT NULL,
+    production_task_id INT,
+    warehouse_id INT NOT NULL,
+    issued_to INT,
+    purpose TEXT COMMENT 'Цель выдачи (номер задания, заказа)',
+    status ENUM('requested', 'approved', 'issued', 'returned', 'cancelled') DEFAULT 'requested',
+    total_value DECIMAL(15,2),
+    notes TEXT,
+    requested_by INT,
+    approved_by INT,
+    issued_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (production_task_id) REFERENCES production_tasks(id) ON DELETE SET NULL,
+    FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE RESTRICT,
+    FOREIGN KEY (issued_to) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (requested_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (issued_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Позиции выдачи материалов
+CREATE TABLE material_issue_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    issue_log_id INT NOT NULL,
+    material_id INT NOT NULL,
+    quantity_requested DECIMAL(10,3) NOT NULL,
+    quantity_approved DECIMAL(10,3),
+    quantity_issued DECIMAL(10,3),
+    quantity_returned DECIMAL(10,3) DEFAULT 0,
+    unit VARCHAR(20),
+    unit_price DECIMAL(12,2),
+    total_value DECIMAL(15,2),
+    storage_location VARCHAR(100),
+    batch_number VARCHAR(50),
+    notes TEXT,
+    FOREIGN KEY (issue_log_id) REFERENCES material_issue_log(id) ON DELETE CASCADE,
+    FOREIGN KEY (material_id) REFERENCES materials(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Отчёты о браке
+CREATE TABLE rejection_reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    report_number VARCHAR(50) UNIQUE NOT NULL,
+    report_date DATE NOT NULL,
+    production_task_id INT,
+    quality_check_id INT,
+    product_id INT,
+    quantity_rejected INT NOT NULL,
+    rejection_stage ENUM('incoming', 'in_process', 'final', 'warranty') NOT NULL,
+    defect_types JSON,
+    root_cause TEXT,
+    corrective_actions TEXT,
+    preventive_actions TEXT,
+    financial_loss DECIMAL(15,2),
+    responsible_person INT,
+    status ENUM('open', 'investigating', 'resolved', 'closed') DEFAULT 'open',
+    investigated_by INT,
+    investigated_at TIMESTAMP NULL,
+    resolved_by INT,
+    resolved_at TIMESTAMP NULL,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (production_task_id) REFERENCES production_tasks(id) ON DELETE SET NULL,
+    FOREIGN KEY (quality_check_id) REFERENCES quality_checks(id) ON DELETE SET NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL,
+    FOREIGN KEY (responsible_person) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (investigated_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (resolved_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Контроль сроков и напоминания
+CREATE TABLE deadlines (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    deadline_type ENUM('order', 'task', 'payment', 'delivery', 'quality', 'maintenance') NOT NULL,
+    reference_id INT NOT NULL,
+    reference_type VARCHAR(50) NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    due_date DATE NOT NULL,
+    priority ENUM('low', 'normal', 'high', 'urgent') DEFAULT 'normal',
+    status ENUM('pending', 'completed', 'overdue', 'cancelled') DEFAULT 'pending',
+    assigned_to INT,
+    reminder_days_before INT DEFAULT 3,
+    reminder_sent BOOLEAN DEFAULT FALSE,
+    completed_at TIMESTAMP NULL,
+    completed_by INT,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (assigned_to) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (completed_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Шаблоны документов
+CREATE TABLE document_templates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    template_name VARCHAR(100) NOT NULL,
+    document_type VARCHAR(50) NOT NULL,
+    template_content TEXT NOT NULL COMMENT 'HTML/PDF шаблон',
+    variables JSON COMMENT 'Переменные для подстановки',
+    is_default BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_by INT,
+    updated_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- История изменений статусов документов
+CREATE TABLE document_status_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    document_type VARCHAR(50) NOT NULL,
+    document_id INT NOT NULL,
+    old_status VARCHAR(50),
+    new_status VARCHAR(50) NOT NULL,
+    changed_by INT NOT NULL,
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    comments TEXT,
+    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Подписи и печати (цифровые)
+CREATE TABLE digital_signatures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    signature_type ENUM('simple', 'enhanced', 'qualified') DEFAULT 'simple',
+    certificate_data TEXT,
+    private_key_path VARCHAR(255),
+    public_key_path VARCHAR(255),
+    valid_from DATE,
+    valid_until DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- ДОПОЛНИТЕЛЬНЫЕ СПРАВОЧНИКИ
+-- ============================================
+
+-- Единицы измерения
+CREATE TABLE units_of_measure (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(10) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    symbol VARCHAR(10),
+    type ENUM('length', 'weight', 'volume', 'area', 'quantity', 'time', 'other') DEFAULT 'quantity',
+    conversion_factor DECIMAL(10,6) DEFAULT 1,
+    base_unit_id INT,
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (base_unit_id) REFERENCES units_of_measure(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Контракты/Договоры
+CREATE TABLE contracts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contract_number VARCHAR(50) UNIQUE NOT NULL,
+    contract_date DATE NOT NULL,
+    customer_id INT NOT NULL,
+    contract_type ENUM('sale', 'purchase', 'service', 'partnership') DEFAULT 'sale',
+    subject TEXT,
+    total_amount DECIMAL(15,2),
+    currency VARCHAR(3) DEFAULT 'BYN',
+    valid_from DATE,
+    valid_until DATE,
+    auto_renewal BOOLEAN DEFAULT FALSE,
+    payment_terms TEXT,
+    delivery_terms TEXT,
+    penalty_terms TEXT,
+    status ENUM('draft', 'active', 'expired', 'terminated', 'completed') DEFAULT 'draft',
+    signed_by_customer VARCHAR(100),
+    signed_by_us VARCHAR(100),
+    scan_path VARCHAR(255),
+    notes TEXT,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Заявки на закупку материалов
+CREATE TABLE purchase_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_number VARCHAR(50) UNIQUE NOT NULL,
+    request_date DATE NOT NULL,
+    requested_by INT NOT NULL,
+    department VARCHAR(100),
+    priority ENUM('low', 'normal', 'high', 'urgent') DEFAULT 'normal',
+    required_date DATE,
+    status ENUM('draft', 'submitted', 'approved', 'ordered', 'received', 'cancelled') DEFAULT 'draft',
+    total_value DECIMAL(15,2),
+    supplier_id INT,
+    approved_by INT,
+    approved_at TIMESTAMP NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (requested_by) REFERENCES users(id) ON DELETE RESTRICT,
+    FOREIGN KEY (supplier_id) REFERENCES customers(id) ON DELETE SET NULL,
+    FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Позиции заявок на закупку
+CREATE TABLE purchase_request_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT NOT NULL,
+    material_id INT,
+    description TEXT,
+    quantity DECIMAL(10,3) NOT NULL,
+    unit VARCHAR(20),
+    estimated_price DECIMAL(12,2),
+    total_value DECIMAL(15,2),
+    supplier_article VARCHAR(100),
+    notes TEXT,
+    FOREIGN KEY (request_id) REFERENCES purchase_requests(id) ON DELETE CASCADE,
+    FOREIGN KEY (material_id) REFERENCES materials(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Индекс для ускорения поиска
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_delivery ON orders(delivery_date);
+CREATE INDEX idx_production_tasks_status ON production_tasks(status);
+CREATE INDEX idx_quality_checks_date ON quality_checks(check_date);
+CREATE INDEX idx_inventory_material ON inventory(material_id);
+CREATE INDEX idx_shipping_order ON shipping_documents(order_id);
+CREATE INDEX idx_invoices_customer ON invoices(customer_id);
+CREATE INDEX idx_contracts_customer ON contracts(customer_id);
+CREATE INDEX idx_deadlines_due ON deadlines(due_date);
