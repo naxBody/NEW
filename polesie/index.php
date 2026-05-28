@@ -47,6 +47,11 @@ $protectedPages = [
     'employee_create',
     'employee_edit',
     'reports',
+    'documents',
+    'view_plan',
+    'view_route_card',
+    'view_passport',
+    'view_ttn',
     'settings',
     'profile',
     'change_password'
@@ -86,6 +91,11 @@ $moduleMap = [
     'employee_create' => 'employees',
     'employee_edit' => 'employees',
     'reports' => 'reports',
+    'documents' => 'documents',
+    'view_plan' => 'documents',
+    'view_route_card' => 'documents',
+    'view_passport' => 'documents',
+    'view_ttn' => 'documents',
     'settings' => 'dashboard',
     'profile' => 'dashboard',
     'change_password' => 'dashboard'
@@ -119,6 +129,11 @@ $pageTitles = [
     'employee_create' => 'Добавление сотрудника',
     'employee_edit' => 'Редактирование сотрудника',
     'reports' => 'Отчеты',
+    'documents' => 'Производственная документация',
+    'view_plan' => 'План производства',
+    'view_route_card' => 'Маршрутная карта',
+    'view_passport' => 'Паспорт изделия',
+    'view_ttn' => 'ТТН',
     'settings' => 'Настройки системы',
     'profile' => 'Профиль пользователя',
     'change_password' => 'Смена пароля'
@@ -168,6 +183,14 @@ switch ($page) {
     
     case 'reports':
         include BASE_PATH . '/modules/reports/index.php';
+        break;
+    
+    case 'documents':
+    case 'view_plan':
+    case 'view_route_card':
+    case 'view_passport':
+    case 'view_ttn':
+        include BASE_PATH . '/modules/documents/index.php';
         break;
     
     case 'settings':
